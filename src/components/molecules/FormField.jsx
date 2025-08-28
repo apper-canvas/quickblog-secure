@@ -1,8 +1,8 @@
 import React from "react";
 import Input from "@/components/atoms/Input";
 import Textarea from "@/components/atoms/Textarea";
+import DatePicker from "@/components/atoms/DatePicker";
 import { cn } from "@/utils/cn";
-
 const FormField = ({ 
   label, 
   error, 
@@ -12,8 +12,7 @@ const FormField = ({
   type = "input",
   ...props 
 }) => {
-  const Component = type === "textarea" ? Textarea : Input;
-  
+  const Component = type === "textarea" ? Textarea : type === "datepicker" ? DatePicker : Input;
   return (
     <div className={cn("space-y-2", className)}>
       {label && (

@@ -189,12 +189,13 @@ const PublishPanel = ({
           {/* Scheduling */}
           <div className="space-y-4 pt-6 border-t border-gray-200">
             <h3 className="font-medium text-charcoal">Publishing</h3>
-            
-            <FormField
+<FormField
               label="Schedule for later (optional)"
-              type="datetime-local"
+              type="datepicker"
               value={formData.publishDate}
-              onChange={(e) => handleChange("publishDate", e.target.value)}
+              onChange={(value) => handleChange("publishDate", value)}
+              placeholder="Select publication date..."
+              minDate={new Date()}
             />
           </div>
         </div>
