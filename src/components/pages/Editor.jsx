@@ -263,7 +263,7 @@ onFormat={handleFormat}
                     />
                     
                     {/* Galleries */}
-                    {post.galleries.length > 0 && (
+{(post.galleries?.length || 0) > 0 && (
                       <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-charcoal">Galleries</h3>
                         {post.galleries.map(gallery => (
@@ -273,7 +273,7 @@ onFormat={handleFormat}
                     )}
                     
                     {/* Video Embeds */}
-                    {post.videoEmbeds.length > 0 && (
+{(post.videoEmbeds?.length || 0) > 0 && (
                       <div className="space-y-4">
                         <h3 className="text-lg font-semibold text-charcoal">Video Embeds</h3>
                         {post.videoEmbeds.map(video => (
@@ -308,7 +308,7 @@ onFormat={handleFormat}
                         />
                         
                         {/* Preview Galleries */}
-                        {post.galleries.map(gallery => (
+{(post.galleries || []).map(gallery => (
                           <ImageGallery key={gallery.id} gallery={gallery} />
                         ))}
                         
@@ -412,7 +412,7 @@ Featured Image URL
               </div>
               
               {/* Gallery Management */}
-              {post.galleries.length > 0 && (
+{(post.galleries?.length || 0) > 0 && (
                 <div className="space-y-3">
                   <label className="text-sm font-medium text-charcoal">
                     Galleries ({post.galleries.length})
@@ -449,7 +449,7 @@ Featured Image URL
               )}
               
               {/* Video Embeds Management */}
-              {post.videoEmbeds.length > 0 && (
+{(post.videoEmbeds?.length || 0) > 0 && (
                 <div className="space-y-3">
                   <label className="text-sm font-medium text-charcoal">
                     Video Embeds ({post.videoEmbeds.length})
