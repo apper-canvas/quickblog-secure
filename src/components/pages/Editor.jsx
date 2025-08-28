@@ -6,6 +6,7 @@ import Input from "@/components/atoms/Input";
 import Textarea from "@/components/atoms/Textarea";
 import EditorToolbar from "@/components/organisms/EditorToolbar";
 import PublishPanel from "@/components/organisms/PublishPanel";
+import AIAssistant from "@/components/organisms/AIAssistant";
 import MediaUploader from "@/components/molecules/MediaUploader";
 import Loading from "@/components/ui/Loading";
 import Error from "@/components/ui/Error";
@@ -28,14 +29,13 @@ const Editor = () => {
     category: "",
     status: "draft"
   });
-  
-  const [loading, setLoading] = useState(false);
+const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [editorMode, setEditorMode] = useState("visual");
   const [publishPanelOpen, setPublishPanelOpen] = useState(false);
   const [showMediaUploader, setShowMediaUploader] = useState(false);
-  
+  const [showAIAssistant, setShowAIAssistant] = useState(false);
   // Load post data if editing
   useEffect(() => {
     if (isEditing) {
@@ -158,7 +158,7 @@ const Editor = () => {
   if (loading) return <Loading />;
   if (error) return <Error message={error} onRetry={loadPost} />;
   
-  return (
+return (
     <div className="h-[calc(100vh-120px)] flex flex-col">
       {/* Toolbar */}
       <EditorToolbar
@@ -167,6 +167,8 @@ const Editor = () => {
         onFormat={handleFormat}
         onInsertMedia={() => setShowMediaUploader(!showMediaUploader)}
         onSave={handleSave}
+        onToggleAI={() => setShowAIAssistant(!showAIAssistant)}
+        showAI={showAIAssistant}
         isSaving={saving}
       />
       
@@ -246,8 +248,35 @@ const Editor = () => {
           </div>
         </div>
         
-        {/* Action Panel */}
+{/* Action Panel */}
         <div className="w-80 bg-gray-50 border-l border-gray-200 p-6 overflow-y-auto">
+          {/* AI Assistant Panel */}
+          {showAIAssistant && (
+            <div className="mb-6 pb-6 border-b border-gray-200">
+              <div className="flex items-center space-x-2 mb-4">
+                <ApperIcon name="Brain" size={18} />
+                <h3 className="font-medium text-charcoal">AI Assistant</h3>
+              </div>
+              <AIAssistant
+                content={post.content}
+                onApplyTitle={(title) => {
+                  handleInputChange("title", title);
+                  toast.success("Title applied successfully");
+                }}
+                onApplyExcerpt={(excerpt) => {
+                  handleInputChange("excerpt", excerpt);
+                  toast.success("Summary applied successfully");
+                }}
+                onApplyTags={(tags) => {
+                  const currentTags = post.tags || [];
+                  const newTags = Array.isArray(tags) ? tags : [tags];
+                  const uniqueTags = [...new Set([...currentTags, ...newTags])];
+                  handleInputChange("tags", uniqueTags);
+                  toast.success(`${newTags.length} keyword(s) added`);
+                }}
+              />
+            </div>
+          )}
           <div className="space-y-6">
             {/* Publish Actions */}
             <div className="space-y-3">
