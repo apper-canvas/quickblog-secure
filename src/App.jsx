@@ -11,10 +11,10 @@ import Settings from "@/components/pages/Settings";
 
 function App() {
   return (
-    <BrowserRouter>
+<BrowserRouter>
       <div className="min-h-screen bg-background font-body">
-        <Routes>
-<ThemeProvider>
+        <ThemeProvider>
+          <Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
@@ -25,8 +25,8 @@ function App() {
               <Route path="analytics" element={<Analytics />} />
               <Route path="settings" element={<Settings />} />
             </Route>
-          </ThemeProvider>
-        </Routes>
+          </Routes>
+        </ThemeProvider>
         
         <ToastContainer
           position="top-right"
