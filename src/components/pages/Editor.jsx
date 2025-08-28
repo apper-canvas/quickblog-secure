@@ -5,9 +5,12 @@ import { postService } from "@/services/api/postService";
 import { mediaService } from "@/services/api/mediaService";
 import { cn } from "@/utils/cn";
 import ApperIcon from "@/components/ApperIcon";
+import VideoEmbed from "@/components/molecules/VideoEmbed";
 import MediaUploader from "@/components/molecules/MediaUploader";
+import ImageGallery from "@/components/molecules/ImageGallery";
 import Textarea from "@/components/atoms/Textarea";
 import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
 import Input from "@/components/atoms/Input";
 import Media from "@/components/pages/Media";
 import EditorToolbar from "@/components/organisms/EditorToolbar";
@@ -15,7 +18,6 @@ import AIAssistant from "@/components/organisms/AIAssistant";
 import PublishPanel from "@/components/organisms/PublishPanel";
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
-
 const Editor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
@@ -37,10 +39,11 @@ const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
   const [editorMode, setEditorMode] = useState("visual");
-  const [publishPanelOpen, setPublishPanelOpen] = useState(false);
-  const [showMediaUploader, setShowMediaUploader] = useState(false);
-  const [showAIAssistant, setShowAIAssistant] = useState(false);
-  // Load post data if editing
+const [publishPanelOpen, setPublishPanelOpen] = useState(false);
+const [showMediaUploader, setShowMediaUploader] = useState(false);
+const [showMediaSelector, setShowMediaSelector] = useState(false);
+const [showAIAssistant, setShowAIAssistant] = useState(false);
+// Load post data if editing
   useEffect(() => {
     if (isEditing) {
       loadPost();
@@ -478,8 +481,7 @@ Featured Image URL
                     ))}
                   </div>
                 </div>
-              )}
-            </div>
+)}
             </div>
             
             {/* Post Info */}
@@ -499,12 +501,11 @@ Featured Image URL
                     <span>Views: {post.views}</span>
                   </div>
                 )}
-</div>
+              </div>
             )}
           </div>
         </div>
       </div>
-      
       {/* Publish Panel */}
       <PublishPanel
         post={post}

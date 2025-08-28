@@ -1,7 +1,7 @@
 import React from "react";
-import Button from "@/components/atoms/Button";
-import ApperIcon from "@/components/ApperIcon";
 import { cn } from "@/utils/cn";
+import ApperIcon from "@/components/ApperIcon";
+import Button from "@/components/atoms/Button";
 
 const EditorToolbar = ({ 
   editorMode, 
@@ -89,22 +89,25 @@ const EditorToolbar = ({
               );
             })}
           </div>
-        )}
-</div>
-      
-      {/* AI Assistant Toggle */}
-      <div className="flex items-center border-l border-gray-200 pl-4">
-        <Button
-          variant={showAI ? "default" : "ghost"}
-          size="sm"
-          onClick={onToggleAI}
-          className={cn(showAI && "bg-sky text-white")}
-        >
-          <ApperIcon name="Brain" size={16} className="mr-1" />
-          AI Assistant
-        </Button>
+)}
       </div>
-      <div className="flex items-center space-x-3">
+      
+      {/* Right Side Actions */}
+      <div className="flex items-center space-x-4">
+        {/* AI Assistant Toggle */}
+        <div className="flex items-center border-l border-gray-200 pl-4">
+          <Button
+            variant={showAI ? "default" : "ghost"}
+            size="sm"
+            onClick={onToggleAI}
+            className={cn(showAI && "bg-sky text-white")}
+          >
+            <ApperIcon name="Brain" size={16} className="mr-1" />
+            AI Assistant
+          </Button>
+        </div>
+        
+        <div className="flex items-center space-x-3">
         <div className="hidden sm:flex items-center space-x-2 text-sm text-gray-500">
           <ApperIcon name="Save" size={14} />
           <span>Auto-saved 2 mins ago</span>
@@ -126,8 +129,9 @@ const EditorToolbar = ({
               <ApperIcon name="Save" size={16} className="mr-1" />
               Save Draft
             </>
-          )}
+)}
         </Button>
+        </div>
       </div>
     </div>
   );
