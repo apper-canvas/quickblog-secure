@@ -31,7 +31,7 @@ const PostCard = ({ post, onDelete, className }) => {
       onClick={handleCardClick}
       className={cn("group overflow-hidden", className)}
     >
-      {post.featuredImage && (
+{post.featuredImage && (
         <div className="relative h-48 overflow-hidden">
           <img
             src={post.featuredImage}
@@ -39,6 +39,54 @@ const PostCard = ({ post, onDelete, className }) => {
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
+        </div>
+      )}
+      
+      {/* Galleries Preview */}
+      {post.galleries && post.galleries.length > 0 && (
+        <div className="relative h-48 overflow-hidden">
+          <div className="grid grid-cols-2 gap-1 h-full">
+            {post.galleries[0].images.slice(0, 4).map((image, index) => (
+              <img
+                key={index}
+                src={image.url}
+                alt={image.alt || "Gallery image"}
+                className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+              />
+            ))}
+            {post.galleries[0].images.length > 4 && (
+              <div className="absolute bottom-2 right-2 bg-black/70 text-white px-2 py-1 rounded text-xs">
+                +{post.galleries[0].images.length - 4} more
+              </div>
+            )}
+          </div>
+          <div className="absolute top-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs flex items-center">
+            <ApperIcon name="Images" size={12} className="mr-1" />
+            Gallery
+          </div>
+        </div>
+      )}
+      
+      {/* Video Embed Preview */}
+      {post.videoEmbeds && post.videoEmbeds.length > 0 && (
+        <div className="relative h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+          <div className="text-center">
+            <div className="w-16 h-16 bg-sky/20 rounded-full flex items-center justify-center mx-auto mb-2">
+              <ApperIcon name="Play" size={24} className="text-sky" />
+            </div>
+            <p className="text-sm text-charcoal font-medium capitalize">
+              {post.videoEmbeds[0].type} Video
+            </p>
+            {post.videoEmbeds.length > 1 && (
+              <p className="text-xs text-gray-500">
+                +{post.videoEmbeds.length - 1} more video{post.videoEmbeds.length > 2 ? 's' : ''}
+              </p>
+            )}
+          </div>
+          <div className="absolute top-2 left-2 bg-black/70 text-white px-2 py-1 rounded text-xs flex items-center">
+            <ApperIcon name="Video" size={12} className="mr-1" />
+            Video
+          </div>
         </div>
       )}
       

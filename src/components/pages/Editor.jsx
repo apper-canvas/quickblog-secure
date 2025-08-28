@@ -1,33 +1,37 @@
-import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "react-toastify";
-import Button from "@/components/atoms/Button";
-import Input from "@/components/atoms/Input";
-import Textarea from "@/components/atoms/Textarea";
-import EditorToolbar from "@/components/organisms/EditorToolbar";
-import PublishPanel from "@/components/organisms/PublishPanel";
-import AIAssistant from "@/components/organisms/AIAssistant";
-import MediaUploader from "@/components/molecules/MediaUploader";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
-import ApperIcon from "@/components/ApperIcon";
 import { postService } from "@/services/api/postService";
 import { mediaService } from "@/services/api/mediaService";
 import { cn } from "@/utils/cn";
+import ApperIcon from "@/components/ApperIcon";
+import MediaUploader from "@/components/molecules/MediaUploader";
+import Textarea from "@/components/atoms/Textarea";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import Media from "@/components/pages/Media";
+import EditorToolbar from "@/components/organisms/EditorToolbar";
+import AIAssistant from "@/components/organisms/AIAssistant";
+import PublishPanel from "@/components/organisms/PublishPanel";
+import Error from "@/components/ui/Error";
+import Loading from "@/components/ui/Loading";
 
 const Editor = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const isEditing = !!id;
   
-  const [post, setPost] = useState({
+const [post, setPost] = useState({
     title: "",
     content: "",
     excerpt: "",
     featuredImage: "",
     tags: [],
     category: "",
-    status: "draft"
+    status: "draft",
+    galleries: [],
+    videoEmbeds: [],
+    captions: {}
   });
 const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
@@ -130,7 +134,7 @@ const [loading, setLoading] = useState(false);
     }
   };
   
-  const handleMediaUpload = async (files) => {
+const handleMediaUpload = async (files) => {
     try {
       const uploadPromises = files.map(file => mediaService.create(file));
       const uploadedMedia = await Promise.all(uploadPromises);
@@ -146,6 +150,44 @@ const [loading, setLoading] = useState(false);
     } catch (err) {
       toast.error("Failed to upload media");
       console.error(err);
+    }
+  };
+
+  const handleAddGallery = () => {
+    setShowMediaSelector(true);
+  };
+
+  const handleAddVideoEmbed = () => {
+    const url = prompt("Enter YouTube or Vimeo URL:");
+    if (url && (url.includes('youtube.com') || url.includes('vimeo.com'))) {
+      const videoEmbed = {
+        id: Date.now(),
+        url,
+        type: url.includes('youtube.com') ? 'youtube' : 'vimeo',
+        caption: ""
+      };
+      handleInputChange("videoEmbeds", [...post.videoEmbeds, videoEmbed]);
+      toast.success("Video embed added successfully");
+    } else if (url) {
+      toast.error("Please enter a valid YouTube or Vimeo URL");
+    }
+  };
+
+  const handleGalleryCreate = (selectedMedia) => {
+    if (selectedMedia.length > 0) {
+      const gallery = {
+        id: Date.now(),
+        title: `Gallery ${post.galleries.length + 1}`,
+        images: selectedMedia.map(media => ({
+          id: media.Id,
+          url: media.url,
+          alt: media.alt || "",
+          caption: ""
+        }))
+      };
+      handleInputChange("galleries", [...post.galleries, gallery]);
+      setShowMediaSelector(false);
+      toast.success("Gallery created successfully");
     }
   };
   
@@ -164,8 +206,10 @@ return (
       <EditorToolbar
         editorMode={editorMode}
         onModeChange={setEditorMode}
-        onFormat={handleFormat}
+onFormat={handleFormat}
         onInsertMedia={() => setShowMediaUploader(!showMediaUploader)}
+        onAddGallery={handleAddGallery}
+        onAddVideoEmbed={handleAddVideoEmbed}
         onSave={handleSave}
         onToggleAI={() => setShowAIAssistant(!showAIAssistant)}
         showAI={showAIAssistant}
@@ -205,15 +249,35 @@ return (
                 />
               </div>
             ) : (
-              <div className="h-full">
+<div className="h-full">
                 {editorMode === "visual" ? (
-                  <div className="p-6 h-full">
+                  <div className="p-6 h-full space-y-6">
                     <Textarea
                       placeholder="Start writing your post..."
                       value={post.content}
                       onChange={(e) => handleInputChange("content", e.target.value)}
-                      className="w-full h-full border-0 focus:ring-0 resize-none text-base leading-relaxed"
+                      className="w-full h-64 border-0 focus:ring-0 resize-none text-base leading-relaxed"
                     />
+                    
+                    {/* Galleries */}
+                    {post.galleries.length > 0 && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-charcoal">Galleries</h3>
+                        {post.galleries.map(gallery => (
+                          <ImageGallery key={gallery.id} gallery={gallery} />
+                        ))}
+                      </div>
+                    )}
+                    
+                    {/* Video Embeds */}
+                    {post.videoEmbeds.length > 0 && (
+                      <div className="space-y-4">
+                        <h3 className="text-lg font-semibold text-charcoal">Video Embeds</h3>
+                        {post.videoEmbeds.map(video => (
+                          <VideoEmbed key={video.id} video={video} />
+                        ))}
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="grid grid-cols-2 h-full">
@@ -229,7 +293,7 @@ return (
                     
                     {/* Preview */}
                     <div className="p-6 overflow-y-auto bg-gray-50">
-                      <div className="prose prose-sm max-w-none">
+                      <div className="prose prose-sm max-w-none space-y-6">
                         <div 
                           className="editor-content"
                           dangerouslySetInnerHTML={{
@@ -239,6 +303,16 @@ return (
                               .replace(/\*(.*?)\*/g, "<em>$1</em>")
                           }}
                         />
+                        
+                        {/* Preview Galleries */}
+                        {post.galleries.map(gallery => (
+                          <ImageGallery key={gallery.id} gallery={gallery} />
+                        ))}
+                        
+                        {/* Preview Video Embeds */}
+                        {post.videoEmbeds.map(video => (
+                          <VideoEmbed key={video.id} video={video} />
+                        ))}
                       </div>
                     </div>
                   </div>
@@ -325,7 +399,7 @@ return (
               
               <div>
                 <label className="block text-sm font-medium text-charcoal mb-2">
-                  Featured Image URL
+Featured Image URL
                 </label>
                 <Input
                   placeholder="https://example.com/image.jpg"
@@ -333,6 +407,79 @@ return (
                   onChange={(e) => handleInputChange("featuredImage", e.target.value)}
                 />
               </div>
+              
+              {/* Gallery Management */}
+              {post.galleries.length > 0 && (
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-charcoal">
+                    Galleries ({post.galleries.length})
+                  </label>
+                  <div className="space-y-2">
+                    {post.galleries.map((gallery, index) => (
+                      <div key={gallery.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <div className="grid grid-cols-3 gap-1 w-12 h-8 overflow-hidden rounded">
+                            {gallery.images.slice(0, 3).map((img, i) => (
+                              <img key={i} src={img.url} alt="" className="w-full h-full object-cover" />
+                            ))}
+                          </div>
+                          <span className="text-sm text-charcoal">{gallery.title}</span>
+                          <Badge variant="secondary" className="text-xs">
+                            {gallery.images.length} images
+                          </Badge>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const updatedGalleries = post.galleries.filter((_, i) => i !== index);
+                            handleInputChange("galleries", updatedGalleries);
+                          }}
+                          className="text-error hover:bg-error/10"
+                        >
+                          <ApperIcon name="Trash2" size={16} />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              
+              {/* Video Embeds Management */}
+              {post.videoEmbeds.length > 0 && (
+                <div className="space-y-3">
+                  <label className="text-sm font-medium text-charcoal">
+                    Video Embeds ({post.videoEmbeds.length})
+                  </label>
+                  <div className="space-y-2">
+                    {post.videoEmbeds.map((video, index) => (
+                      <div key={video.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                        <div className="flex items-center space-x-3">
+                          <div className="w-12 h-8 bg-gray-200 rounded flex items-center justify-center">
+                            <ApperIcon name="Play" size={12} className="text-gray-500" />
+                          </div>
+                          <div>
+                            <p className="text-sm text-charcoal capitalize">{video.type} Video</p>
+                            <p className="text-xs text-gray-500 truncate max-w-40">{video.url}</p>
+                          </div>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={() => {
+                            const updatedVideos = post.videoEmbeds.filter((_, i) => i !== index);
+                            handleInputChange("videoEmbeds", updatedVideos);
+                          }}
+                          className="text-error hover:bg-error/10"
+                        >
+                          <ApperIcon name="Trash2" size={16} />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
             </div>
             
             {/* Post Info */}
@@ -352,7 +499,7 @@ return (
                     <span>Views: {post.views}</span>
                   </div>
                 )}
-              </div>
+</div>
             )}
           </div>
         </div>

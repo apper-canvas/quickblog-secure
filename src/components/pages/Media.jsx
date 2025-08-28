@@ -1,16 +1,17 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { format } from "date-fns";
-import Card from "@/components/atoms/Card";
-import Button from "@/components/atoms/Button";
-import Badge from "@/components/atoms/Badge";
+import { mediaService } from "@/services/api/mediaService";
+import ApperIcon from "@/components/ApperIcon";
 import SearchBar from "@/components/molecules/SearchBar";
 import MediaUploader from "@/components/molecules/MediaUploader";
-import Loading from "@/components/ui/Loading";
+import Card from "@/components/atoms/Card";
+import Textarea from "@/components/atoms/Textarea";
+import Button from "@/components/atoms/Button";
+import Badge from "@/components/atoms/Badge";
 import Error from "@/components/ui/Error";
 import Empty from "@/components/ui/Empty";
-import ApperIcon from "@/components/ApperIcon";
-import { mediaService } from "@/services/api/mediaService";
+import Loading from "@/components/ui/Loading";
 
 const Media = () => {
   const [media, setMedia] = useState([]);
@@ -19,9 +20,10 @@ const Media = () => {
   const [error, setError] = useState("");
   const [searchQuery, setSearchQuery] = useState("");
   const [typeFilter, setTypeFilter] = useState("all");
-  const [showUploader, setShowUploader] = useState(false);
+const [showUploader, setShowUploader] = useState(false);
   const [selectedMedia, setSelectedMedia] = useState(null);
-  
+  const [editingCaption, setEditingCaption] = useState(false);
+  const [captionText, setCaptionText] = useState("");
   const loadMedia = async () => {
     setLoading(true);
     setError("");
@@ -67,7 +69,7 @@ const Media = () => {
   }, [media, searchQuery, typeFilter]);
   
   const handleSearch = (query) => {
-    setSearchQuery(query);
+setSearchQuery(query);
   };
   
   const handleUpload = async (files) => {
@@ -80,6 +82,23 @@ const Media = () => {
       toast.success(`${uploadedMedia.length} file(s) uploaded successfully`);
     } catch (err) {
       toast.error("Failed to upload media");
+      console.error(err);
+    }
+  };
+
+  const handleCaptionSave = async () => {
+    if (!selectedMedia) return;
+    
+    try {
+      const updatedMedia = { ...selectedMedia, caption: captionText };
+      await mediaService.update(selectedMedia.Id, updatedMedia);
+      
+      setMedia(prev => prev.map(m => m.Id === selectedMedia.Id ? updatedMedia : m));
+      setSelectedMedia(updatedMedia);
+      setEditingCaption(false);
+      toast.success("Caption updated successfully");
+    } catch (err) {
+      toast.error("Failed to update caption");
       console.error(err);
     }
   };
@@ -335,7 +354,7 @@ const Media = () => {
               </div>
               
               {/* Media Info */}
-              <div className="grid gap-4">
+<div className="grid gap-4">
                 <div>
                   <label className="text-sm font-medium text-gray-600">Filename</label>
                   <p className="text-charcoal">{selectedMedia.filename || `${selectedMedia.type}_${selectedMedia.Id}`}</p>
@@ -353,6 +372,52 @@ const Media = () => {
                       <ApperIcon name="Copy" size={16} />
                     </Button>
                   </div>
+                </div>
+                
+                {/* Caption Editor */}
+                <div>
+                  <label className="text-sm font-medium text-gray-600">Caption</label>
+                  {editingCaption ? (
+                    <div className="space-y-2">
+                      <Textarea
+                        placeholder="Add a caption for this media..."
+                        value={captionText}
+                        onChange={(e) => setCaptionText(e.target.value)}
+                        className="min-h-[80px]"
+                      />
+                      <div className="flex items-center space-x-2">
+                        <Button size="sm" onClick={handleCaptionSave}>
+                          Save Caption
+                        </Button>
+                        <Button 
+                          variant="ghost" 
+                          size="sm" 
+                          onClick={() => {
+                            setEditingCaption(false);
+                            setCaptionText(selectedMedia.caption || "");
+                          }}
+                        >
+                          Cancel
+                        </Button>
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="flex items-start justify-between">
+                      <p className="text-charcoal flex-1">
+                        {selectedMedia.caption || "No caption"}
+                      </p>
+                      <Button
+                        variant="ghost"
+                        size="sm"
+                        onClick={() => {
+                          setEditingCaption(true);
+                          setCaptionText(selectedMedia.caption || "");
+                        }}
+                      >
+                        <ApperIcon name="Edit" size={16} />
+                      </Button>
+                    </div>
+                  )}
                 </div>
                 
                 <div className="grid grid-cols-2 gap-4">
@@ -384,21 +449,33 @@ const Media = () => {
               </div>
             </div>
             
-            <div className="p-4 border-t border-gray-200 flex justify-between">
+<div className="p-4 border-t border-gray-200 flex justify-between">
               <Button
                 variant="danger"
                 onClick={() => handleDelete(selectedMedia.Id)}
+                disabled={editingCaption}
               >
                 <ApperIcon name="Trash2" size={16} className="mr-2" />
                 Delete
               </Button>
               
-              <Button
-                onClick={() => copyToClipboard(selectedMedia.url)}
-              >
-                <ApperIcon name="Copy" size={16} className="mr-2" />
-                Copy URL
-              </Button>
+              <div className="flex space-x-2">
+                <Button
+                  variant="secondary"
+                  onClick={() => copyToClipboard(selectedMedia.url)}
+                  disabled={editingCaption}
+                >
+                  <ApperIcon name="Copy" size={16} className="mr-2" />
+                  Copy URL
+                </Button>
+                <Button
+                  onClick={() => copyToClipboard(`![${selectedMedia.caption || selectedMedia.alt || 'Image'}](${selectedMedia.url})`)}
+                  disabled={editingCaption}
+                >
+                  <ApperIcon name="Code" size={16} className="mr-2" />
+                  Copy Markdown
+                </Button>
+              </div>
             </div>
           </div>
         </div>

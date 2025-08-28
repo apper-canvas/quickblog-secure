@@ -7,7 +7,8 @@ const MediaUploader = ({
   onUpload, 
   accept = "image/*,video/*", 
   multiple = false,
-  className 
+  className,
+  allowCaptions = false
 }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [uploading, setUploading] = useState(false);
@@ -45,12 +46,15 @@ const MediaUploader = ({
     e.target.value = "";
   };
   
-  const handleFiles = async (files) => {
+const handleFiles = async (files) => {
     if (files.length === 0) return;
     
     setUploading(true);
     try {
-      await onUpload(files);
+      const filesWithCaptions = allowCaptions 
+        ? Array.from(files).map(file => ({ file, caption: "" }))
+        : files;
+      await onUpload(filesWithCaptions);
     } catch (error) {
       console.error("Upload failed:", error);
     } finally {
@@ -58,7 +62,7 @@ const MediaUploader = ({
     }
   };
   
-  return (
+return (
     <div className={cn("space-y-4", className)}>
       <div
         className={cn(
@@ -75,7 +79,7 @@ const MediaUploader = ({
         <div className="flex flex-col items-center space-y-4">
           <div className="p-4 bg-gradient-to-br from-sky/10 to-blue-100 rounded-full">
             <ApperIcon 
-              name={uploading ? "Loader2" : "Upload"} 
+              name={uploading ? "Loader2" : allowCaptions ? "ImagePlus" : "Upload"} 
               size={32} 
               className={cn(
                 "text-sky",
@@ -85,13 +89,13 @@ const MediaUploader = ({
           </div>
           <div className="space-y-2">
             <p className="text-lg font-medium text-charcoal">
-              {uploading ? "Uploading files..." : "Drop files here"}
+              {uploading ? "Uploading files..." : allowCaptions ? "Add images to gallery" : "Drop files here"}
             </p>
             <p className="text-sm text-gray-600">
               or click to browse your computer
             </p>
             <p className="text-xs text-gray-500">
-              Supports images and videos up to 10MB
+              {allowCaptions ? "Upload images with captions for your gallery" : "Supports images and videos up to 10MB"}
             </p>
           </div>
         </div>

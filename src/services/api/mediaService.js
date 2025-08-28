@@ -22,15 +22,20 @@ class MediaService {
   async create(file) {
     await this.delay(800); // Simulate upload time
     
+// Handle file with caption object or direct file
+    const actualFile = file.file || file;
+    const caption = file.caption || "";
+    
     // Generate mock media data
     const newMedia = {
       Id: Math.max(...this.media.map(m => m.Id), 0) + 1,
-      url: this.generateMockUrl(file),
-      thumbnailUrl: this.generateMockThumbnailUrl(file),
-      type: file.type?.startsWith("video/") ? "video" : "image",
-      filename: file.name || `file_${Date.now()}`,
-      alt: file.name?.replace(/\.[^/.]+$/, "") || "Uploaded media",
-      size: file.size || Math.floor(Math.random() * 500000) + 100000,
+      url: this.generateMockUrl(actualFile),
+      thumbnailUrl: this.generateMockThumbnailUrl(actualFile),
+      type: actualFile.type?.startsWith("video/") ? "video" : "image",
+      filename: actualFile.name || `file_${Date.now()}`,
+      alt: actualFile.name?.replace(/\.[^/.]+$/, "") || "Uploaded media",
+      caption: caption,
+      size: actualFile.size || Math.floor(Math.random() * 500000) + 100000,
       dimensions: {
         width: 1200,
         height: 800

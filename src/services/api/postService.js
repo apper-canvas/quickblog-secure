@@ -20,14 +20,17 @@ class PostService {
   }
 
   async create(postData) {
-    await this.delay(400);
+await this.delay(400);
     const newPost = {
       ...postData,
       Id: Math.max(...this.posts.map(p => p.Id), 0) + 1,
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
       views: 0,
-      readTime: this.calculateReadTime(postData.content || "")
+      readTime: this.calculateReadTime(postData.content || ""),
+      galleries: postData.galleries || [],
+      videoEmbeds: postData.videoEmbeds || [],
+      captions: postData.captions || {}
     };
     this.posts.unshift(newPost);
     return { ...newPost };
@@ -41,10 +44,13 @@ class PostService {
     }
     
     const updatedPost = {
-      ...this.posts[index],
+...this.posts[index],
       ...postData,
       updatedAt: new Date().toISOString(),
-      readTime: this.calculateReadTime(postData.content || this.posts[index].content || "")
+      readTime: this.calculateReadTime(postData.content || this.posts[index].content || ""),
+      galleries: postData.galleries || this.posts[index].galleries || [],
+      videoEmbeds: postData.videoEmbeds || this.posts[index].videoEmbeds || [],
+      captions: postData.captions || this.posts[index].captions || {}
     };
     
     this.posts[index] = updatedPost;
