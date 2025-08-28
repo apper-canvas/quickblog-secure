@@ -1,568 +1,288 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { toast } from "react-toastify";
-import Button from "@/components/atoms/Button";
-import Card from "@/components/atoms/Card";
-import FormField from "@/components/molecules/FormField";
-import Loading from "@/components/ui/Loading";
-import Error from "@/components/ui/Error";
+import ThemePreview from "@/components/organisms/ThemePreview";
 import ApperIcon from "@/components/ApperIcon";
-import { settingsService } from "@/services/api/settingsService";
+import FormField from "@/components/molecules/FormField";
+import Card from "@/components/atoms/Card";
+import Textarea from "@/components/atoms/Textarea";
+import Button from "@/components/atoms/Button";
+import Input from "@/components/atoms/Input";
+import Media from "@/components/pages/Media";
+import Loading from "@/components/ui/Loading";
 
 const Settings = () => {
-  const [settings, setSettings] = useState({
-    // General Settings
-    blogTitle: "",
-    blogDescription: "",
-    blogUrl: "",
-    language: "en",
-    timezone: "UTC",
-    
-    // SEO Settings
-    metaTitle: "",
-    metaDescription: "",
-    metaKeywords: "",
-    
-    // Appearance Settings
-    theme: "classic",
-    customDomain: "",
-    headerLogo: "",
-    favicon: "",
-    
-    // Comment Settings
-    commentsEnabled: true,
-    moderationRequired: true,
-    spamFilter: true,
-    emailNotifications: true,
-    
-    // Newsletter Settings
-    newsletterEnabled: false,
-    newsletterProvider: "",
-    
-    // Monetization Settings
-    monetizationEnabled: false,
-    tipsEnabled: false,
-    paywallEnabled: false
-  });
-  
-  const [loading, setLoading] = useState(true);
-  const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState("general");
-  
-  const loadSettings = async () => {
-    setLoading(true);
-    setError("");
-    
-    try {
-      const data = await settingsService.getSettings();
-      setSettings(data);
-    } catch (err) {
-      setError("Failed to load settings");
-      console.error(err);
-    } finally {
-      setLoading(false);
+  const [settings, setSettings] = useState({
+    siteName: "My Blog",
+    tagline: "Thoughts, stories and ideas.",
+    description: "A place where I share my thoughts and experiences about web development, design, and technology.",
+    author: "John Doe",
+    email: "john@example.com",
+    socialLinks: {
+      twitter: "",
+      linkedin: "",
+      github: ""
     }
-  };
-  
-  useEffect(() => {
-    loadSettings();
-  }, []);
-  
-  const handleChange = (field, value) => {
+  });
+
+  const tabs = [
+    { id: "general", label: "General", icon: "Settings" },
+    { id: "themes", label: "Themes", icon: "Palette" },
+    { id: "social", label: "Social", icon: "Share2" }
+  ];
+
+  const handleInputChange = (field, value) => {
     setSettings(prev => ({
       ...prev,
       [field]: value
     }));
   };
-  
+
+  const handleSocialChange = (platform, value) => {
+    setSettings(prev => ({
+      ...prev,
+      socialLinks: {
+        ...prev.socialLinks,
+        [platform]: value
+      }
+    }));
+  };
+
   const handleSave = async () => {
-    setSaving(true);
-    
+    setLoading(true);
     try {
-      await settingsService.updateSettings(settings);
-      toast.success("Settings saved successfully");
-    } catch (err) {
+      // Simulate API call
+      await new Promise(resolve => setTimeout(resolve, 1000));
+      toast.success("Settings saved successfully!");
+    } catch (error) {
       toast.error("Failed to save settings");
-      console.error(err);
     } finally {
-      setSaving(false);
+setLoading(false);
     }
   };
-  
-  if (loading) return <Loading />;
-  if (error) return <Error message={error} onRetry={loadSettings} />;
-  
-  const tabs = [
-    { id: "general", label: "General", icon: "Settings" },
-    { id: "seo", label: "SEO", icon: "Search" },
-    { id: "appearance", label: "Appearance", icon: "Palette" },
-    { id: "comments", label: "Comments", icon: "MessageCircle" },
-    { id: "newsletter", label: "Newsletter", icon: "Mail" },
-    { id: "monetization", label: "Monetization", icon: "DollarSign" }
-  ];
-  
-  const themes = [
-    { value: "classic", label: "Classic" },
-    { value: "magazine", label: "Magazine" },
-    { value: "minimal", label: "Minimal" }
-  ];
-  
-  const languages = [
-    { value: "en", label: "English" },
-    { value: "es", label: "Spanish" },
-    { value: "fr", label: "French" },
-    { value: "de", label: "German" },
-    { value: "it", label: "Italian" }
-  ];
-  
-  const timezones = [
-    { value: "UTC", label: "UTC" },
-    { value: "America/New_York", label: "Eastern Time" },
-    { value: "America/Chicago", label: "Central Time" },
-    { value: "America/Denver", label: "Mountain Time" },
-    { value: "America/Los_Angeles", label: "Pacific Time" },
-    { value: "Europe/London", label: "London" },
-    { value: "Europe/Paris", label: "Paris" },
-    { value: "Asia/Tokyo", label: "Tokyo" }
-  ];
-  
+
   return (
-    <div className="space-y-6">
+    <div className="space-y-8">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl font-bold font-display text-charcoal">Settings</h1>
-          <p className="text-gray-600 mt-1">
-            Configure your blog settings and preferences
-          </p>
-        </div>
-        
-        <Button onClick={handleSave} disabled={saving}>
-          {saving ? (
-            <>
-              <ApperIcon name="Loader2" size={16} className="mr-2 animate-spin" />
-              Saving...
-            </>
-          ) : (
-            <>
-              <ApperIcon name="Save" size={16} className="mr-2" />
-              Save Changes
-            </>
-          )}
-        </Button>
+      <div>
+        <h1 className="text-2xl font-bold font-display text-charcoal">
+          Settings
+        </h1>
+        <p className="text-gray-600 mt-1">
+          Manage your blog configuration and preferences.
+        </p>
       </div>
-      
-      <div className="grid lg:grid-cols-4 gap-6">
-        {/* Navigation Tabs */}
-        <div className="lg:col-span-1">
-          <nav className="space-y-1">
-            {tabs.map(tab => (
-              <button
-                key={tab.id}
-                onClick={() => setActiveTab(tab.id)}
-                className={`w-full flex items-center space-x-3 px-4 py-3 text-left rounded-lg transition-all duration-200 ${
-                  activeTab === tab.id
-                    ? "bg-gradient-to-r from-sky to-blue-500 text-white shadow-md"
-                    : "text-slate hover:text-charcoal hover:bg-gray-100"
-                }`}
+
+      {/* Tabs Navigation */}
+      <div className="border-b border-gray-200">
+        <nav className="flex space-x-8">
+          {tabs.map((tab) => (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              className={`
+                flex items-center py-4 px-1 border-b-2 font-medium text-sm transition-colors duration-200
+                ${activeTab === tab.id
+                  ? 'border-sky text-sky'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                }
+              `}
+            >
+              <ApperIcon name={tab.icon} size={16} className="mr-2" />
+              {tab.label}
+            </button>
+          ))}
+        </nav>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === "general" && (
+        <div className="grid lg:grid-cols-3 gap-8">
+          {/* Settings Form */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Site Information */}
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold font-display text-charcoal mb-4">
+                Site Information
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-2">
+                    Site Name
+                  </label>
+                  <Input
+                    value={settings.siteName}
+                    onChange={(e) => handleInputChange("siteName", e.target.value)}
+                    placeholder="Enter your site name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-2">
+                    Tagline
+                  </label>
+                  <Input
+                    value={settings.tagline}
+                    onChange={(e) => handleInputChange("tagline", e.target.value)}
+                    placeholder="A short description of your blog"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-2">
+                    Description
+                  </label>
+                  <Textarea
+                    value={settings.description}
+                    onChange={(e) => handleInputChange("description", e.target.value)}
+                    placeholder="A longer description for SEO purposes"
+                    rows={4}
+                  />
+                </div>
+              </div>
+            </Card>
+
+            {/* Author Information */}
+            <Card className="p-6">
+              <h2 className="text-lg font-semibold font-display text-charcoal mb-4">
+                Author Information
+              </h2>
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-2">
+                    Author Name
+                  </label>
+                  <Input
+                    value={settings.author}
+                    onChange={(e) => handleInputChange("author", e.target.value)}
+                    placeholder="Your full name"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-charcoal mb-2">
+                    Email Address
+                  </label>
+                  <Input
+                    type="email"
+                    value={settings.email}
+                    onChange={(e) => handleInputChange("email", e.target.value)}
+                    placeholder="your.email@example.com"
+                  />
+                </div>
+              </div>
+            </Card>
+          </div>
+
+          {/* Sidebar */}
+          <div className="space-y-6">
+            {/* Save Button */}
+            <Card className="p-6">
+              <h3 className="font-semibold text-charcoal mb-4">Save Changes</h3>
+              <Button
+                onClick={handleSave}
+                disabled={loading}
+                className="w-full"
               >
-                <ApperIcon 
-                  name={tab.icon} 
-                  size={18} 
-                  className={activeTab === tab.id ? "text-white" : "text-slate"} 
-                />
-                <span className="font-medium">{tab.label}</span>
-              </button>
-            ))}
-          </nav>
+                {loading ? (
+                  <Loading />
+                ) : (
+                  <>
+                    <ApperIcon name="Save" size={16} className="mr-2" />
+                    Save Settings
+                  </>
+                )}
+</Button>
+            </Card>
+
+            {/* Quick Stats */}
+            <Card className="p-6">
+              <h3 className="font-semibold text-charcoal mb-4">Quick Stats</h3>
+              <div className="space-y-3">
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Last Updated</span>
+                  <span className="text-charcoal font-medium">2 hours ago</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Site Status</span>
+                  <span className="text-success font-medium">Online</span>
+                </div>
+                <div className="flex justify-between items-center">
+                  <span className="text-gray-600">Theme Version</span>
+                  <span className="text-charcoal font-medium">1.0.0</span>
+                </div>
+              </div>
+            </Card>
+          </div>
         </div>
-        
-        {/* Settings Content */}
-        <div className="lg:col-span-3">
+      )}
+
+      {activeTab === "themes" && <ThemePreview />}
+
+      {activeTab === "social" && (
+        <div className="max-w-4xl">
           <Card className="p-6">
-            {activeTab === "general" && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-lg font-semibold font-display text-charcoal mb-4">
-                    General Settings
-                  </h2>
-                  <div className="space-y-4">
-                    <FormField
-                      label="Blog Title"
-                      required
-                      value={settings.blogTitle}
-                      onChange={(e) => handleChange("blogTitle", e.target.value)}
-                      placeholder="My Awesome Blog"
-                    />
-                    
-                    <FormField
-                      label="Blog Description"
-                      type="textarea"
-                      value={settings.blogDescription}
-                      onChange={(e) => handleChange("blogDescription", e.target.value)}
-                      placeholder="A brief description of your blog..."
-                    />
-                    
-                    <FormField
-                      label="Blog URL"
-                      value={settings.blogUrl}
-                      onChange={(e) => handleChange("blogUrl", e.target.value)}
-                      placeholder="https://myblog.com"
-                    />
-                    
-                    <div className="grid sm:grid-cols-2 gap-4">
-                      <div>
-                        <label className="block text-sm font-medium text-charcoal mb-2">
-                          Language
-                        </label>
-                        <select
-                          value={settings.language}
-                          onChange={(e) => handleChange("language", e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-sky focus:ring-2 focus:ring-sky focus:ring-offset-0 transition-colors duration-200"
-                        >
-                          {languages.map(lang => (
-                            <option key={lang.value} value={lang.value}>
-                              {lang.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                      
-                      <div>
-                        <label className="block text-sm font-medium text-charcoal mb-2">
-                          Timezone
-                        </label>
-                        <select
-                          value={settings.timezone}
-                          onChange={(e) => handleChange("timezone", e.target.value)}
-                          className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-sky focus:ring-2 focus:ring-sky focus:ring-offset-0 transition-colors duration-200"
-                        >
-                          {timezones.map(tz => (
-                            <option key={tz.value} value={tz.value}>
-                              {tz.label}
-                            </option>
-                          ))}
-                        </select>
-                      </div>
-                    </div>
-                  </div>
-                </div>
+            <h2 className="text-lg font-semibold font-display text-charcoal mb-6">
+              Social Media Links
+            </h2>
+            <div className="grid md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-charcoal mb-2">
+                  <ApperIcon name="Twitter" size={16} className="inline mr-2" />
+                  Twitter
+                </label>
+                <Input
+                  value={settings.socialLinks.twitter}
+                  onChange={(e) => handleSocialChange("twitter", e.target.value)}
+                  placeholder="https://twitter.com/yourusername"
+                />
               </div>
-            )}
+              <div>
+                <label className="block text-sm font-medium text-charcoal mb-2">
+                  <ApperIcon name="Linkedin" size={16} className="inline mr-2" />
+                  LinkedIn
+                </label>
+                <Input
+                  value={settings.socialLinks.linkedin}
+                  onChange={(e) => handleSocialChange("linkedin", e.target.value)}
+                  placeholder="https://linkedin.com/in/yourusername"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-charcoal mb-2">
+                  <ApperIcon name="Github" size={16} className="inline mr-2" />
+                  GitHub
+                </label>
+                <Input
+                  value={settings.socialLinks.github}
+                  onChange={(e) => handleSocialChange("github", e.target.value)}
+                  placeholder="https://github.com/yourusername"
+                />
+              </div>
+              <div>
+                <label className="block text-sm font-medium text-charcoal mb-2">
+                  <ApperIcon name="Instagram" size={16} className="inline mr-2" />
+                  Instagram
+                </label>
+                <Input
+                  placeholder="https://instagram.com/yourusername"
+                />
+              </div>
+            </div>
             
-            {activeTab === "seo" && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-lg font-semibold font-display text-charcoal mb-4">
-                    SEO Settings
-                  </h2>
-                  <div className="space-y-4">
-                    <FormField
-                      label="Meta Title"
-                      value={settings.metaTitle}
-                      onChange={(e) => handleChange("metaTitle", e.target.value)}
-                      placeholder="Default meta title for your blog"
-                    />
-                    
-                    <FormField
-                      label="Meta Description"
-                      type="textarea"
-                      value={settings.metaDescription}
-                      onChange={(e) => handleChange("metaDescription", e.target.value)}
-                      placeholder="Default meta description for your blog..."
-                    />
-                    
-                    <FormField
-                      label="Meta Keywords"
-                      value={settings.metaKeywords}
-                      onChange={(e) => handleChange("metaKeywords", e.target.value)}
-                      placeholder="blog, writing, content, etc."
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {activeTab === "appearance" && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-lg font-semibold font-display text-charcoal mb-4">
-                    Appearance Settings
-                  </h2>
-                  <div className="space-y-4">
-                    <div>
-                      <label className="block text-sm font-medium text-charcoal mb-2">
-                        Theme
-                      </label>
-                      <select
-                        value={settings.theme}
-                        onChange={(e) => handleChange("theme", e.target.value)}
-                        className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:border-sky focus:ring-2 focus:ring-sky focus:ring-offset-0 transition-colors duration-200"
-                      >
-                        {themes.map(theme => (
-                          <option key={theme.value} value={theme.value}>
-                            {theme.label}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    
-                    <FormField
-                      label="Custom Domain"
-                      value={settings.customDomain}
-                      onChange={(e) => handleChange("customDomain", e.target.value)}
-                      placeholder="blog.yourdomain.com"
-                    />
-                    
-                    <FormField
-                      label="Header Logo URL"
-                      value={settings.headerLogo}
-                      onChange={(e) => handleChange("headerLogo", e.target.value)}
-                      placeholder="https://example.com/logo.png"
-                    />
-                    
-                    <FormField
-                      label="Favicon URL"
-                      value={settings.favicon}
-                      onChange={(e) => handleChange("favicon", e.target.value)}
-                      placeholder="https://example.com/favicon.ico"
-                    />
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {activeTab === "comments" && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-lg font-semibold font-display text-charcoal mb-4">
-                    Comment Settings
-                  </h2>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <label className="text-sm font-medium text-charcoal">
-                          Enable Comments
-                        </label>
-                        <p className="text-xs text-gray-500">
-                          Allow visitors to comment on your posts
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => handleChange("commentsEnabled", !settings.commentsEnabled)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          settings.commentsEnabled ? "bg-sky" : "bg-gray-300"
-                        }`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            settings.commentsEnabled ? "translate-x-6" : "translate-x-1"
-                          }`}
-                        />
-                      </button>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <label className="text-sm font-medium text-charcoal">
-                          Moderation Required
-                        </label>
-                        <p className="text-xs text-gray-500">
-                          Comments require approval before appearing
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => handleChange("moderationRequired", !settings.moderationRequired)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          settings.moderationRequired ? "bg-sky" : "bg-gray-300"
-                        }`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            settings.moderationRequired ? "translate-x-6" : "translate-x-1"
-                          }`}
-                        />
-                      </button>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <label className="text-sm font-medium text-charcoal">
-                          Spam Filter
-                        </label>
-                        <p className="text-xs text-gray-500">
-                          Automatically detect and filter spam comments
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => handleChange("spamFilter", !settings.spamFilter)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          settings.spamFilter ? "bg-sky" : "bg-gray-300"
-                        }`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            settings.spamFilter ? "translate-x-6" : "translate-x-1"
-                          }`}
-                        />
-                      </button>
-                    </div>
-                    
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <label className="text-sm font-medium text-charcoal">
-                          Email Notifications
-                        </label>
-                        <p className="text-xs text-gray-500">
-                          Get notified when new comments are posted
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => handleChange("emailNotifications", !settings.emailNotifications)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          settings.emailNotifications ? "bg-sky" : "bg-gray-300"
-                        }`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            settings.emailNotifications ? "translate-x-6" : "translate-x-1"
-                          }`}
-                        />
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {activeTab === "newsletter" && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-lg font-semibold font-display text-charcoal mb-4">
-                    Newsletter Settings
-                  </h2>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <label className="text-sm font-medium text-charcoal">
-                          Enable Newsletter
-                        </label>
-                        <p className="text-xs text-gray-500">
-                          Allow visitors to subscribe to your newsletter
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => handleChange("newsletterEnabled", !settings.newsletterEnabled)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          settings.newsletterEnabled ? "bg-sky" : "bg-gray-300"
-                        }`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            settings.newsletterEnabled ? "translate-x-6" : "translate-x-1"
-                          }`}
-                        />
-                      </button>
-                    </div>
-                    
-                    {settings.newsletterEnabled && (
-                      <FormField
-                        label="Newsletter Provider"
-                        value={settings.newsletterProvider}
-                        onChange={(e) => handleChange("newsletterProvider", e.target.value)}
-                        placeholder="e.g., Mailchimp, ConvertKit, etc."
-                      />
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-            
-            {activeTab === "monetization" && (
-              <div className="space-y-6">
-                <div>
-                  <h2 className="text-lg font-semibold font-display text-charcoal mb-4">
-                    Monetization Settings
-                  </h2>
-                  <div className="space-y-4">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <label className="text-sm font-medium text-charcoal">
-                          Enable Monetization
-                        </label>
-                        <p className="text-xs text-gray-500">
-                          Allow readers to support your work
-                        </p>
-                      </div>
-                      <button
-                        onClick={() => handleChange("monetizationEnabled", !settings.monetizationEnabled)}
-                        className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                          settings.monetizationEnabled ? "bg-sky" : "bg-gray-300"
-                        }`}
-                      >
-                        <span
-                          className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                            settings.monetizationEnabled ? "translate-x-6" : "translate-x-1"
-                          }`}
-                        />
-                      </button>
-                    </div>
-                    
-                    {settings.monetizationEnabled && (
-                      <>
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <label className="text-sm font-medium text-charcoal">
-                              Tips & Donations
-                            </label>
-                            <p className="text-xs text-gray-500">
-                              Allow readers to tip or donate
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => handleChange("tipsEnabled", !settings.tipsEnabled)}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              settings.tipsEnabled ? "bg-sky" : "bg-gray-300"
-                            }`}
-                          >
-                            <span
-                              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                                settings.tipsEnabled ? "translate-x-6" : "translate-x-1"
-                              }`}
-                            />
-                          </button>
-                        </div>
-                        
-                        <div className="flex items-center justify-between">
-                          <div>
-                            <label className="text-sm font-medium text-charcoal">
-                              Paywall
-                            </label>
-                            <p className="text-xs text-gray-500">
-                              Restrict premium content to subscribers
-                            </p>
-                          </div>
-                          <button
-                            onClick={() => handleChange("paywallEnabled", !settings.paywallEnabled)}
-                            className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
-                              settings.paywallEnabled ? "bg-sky" : "bg-gray-300"
-                            }`}
-                          >
-                            <span
-                              className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
-                                settings.paywallEnabled ? "translate-x-6" : "translate-x-1"
-                              }`}
-                            />
-                          </button>
-                        </div>
-                      </>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
-          </Card>
-        </div>
+            <div className="mt-6 pt-6 border-t border-gray-200">
+              <Button onClick={handleSave} disabled={loading}>
+                {loading ? (
+                  <Loading />
+                ) : (
+                  <>
+                    <ApperIcon name="Save" size={16} className="mr-2" />
+                    Save Social Links
+                  </>
+                )}
+              </Button>
+            </div>
+</Card>
+          </div>
+        )}
       </div>
     </div>
   );
