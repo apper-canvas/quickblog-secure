@@ -1,0 +1,132 @@
+[
+  {
+    "Id": 1,
+    "postId": "1",
+    "parentId": null,
+    "author": "Sarah Johnson",
+    "email": "sarah.johnson@example.com",
+    "content": "This is an excellent overview of modern web development! I especially appreciated the section on JAMstack principles. Have you had experience with any specific JAMstack frameworks you'd recommend for beginners?",
+    "status": "approved",
+    "createdAt": "2024-01-16T14:30:00.000Z"
+  },
+  {
+    "Id": 2,
+    "postId": "1",
+    "parentId": "1",
+    "author": "QuickBlog Author",
+    "email": "author@quickblog.com",
+    "content": "Thanks for the kind words, Sarah! For beginners, I'd highly recommend starting with Gatsby or Next.js. Both have excellent documentation and large communities. Gatsby is great for static sites, while Next.js offers more flexibility for dynamic applications.",
+    "status": "approved",
+    "createdAt": "2024-01-16T15:45:00.000Z"
+  },
+  {
+    "Id": 3,
+    "postId": "1",
+    "parentId": null,
+    "author": "Mike Chen",
+    "email": "mike.chen@example.com",
+    "content": "Great article! I'm curious about your thoughts on Vite vs Webpack. We're considering migrating our project from Webpack to Vite. Any insights on potential challenges we might face?",
+    "status": "approved",
+    "createdAt": "2024-01-17T09:15:00.000Z"
+  },
+  {
+    "Id": 4,
+    "postId": "2",
+    "parentId": null,
+    "author": "Emily Rodriguez",
+    "email": "emily.rodriguez@example.com",
+    "content": "The DRY principle section really resonated with me. I've been guilty of code duplication in the past. Do you have any tools or techniques you recommend for identifying duplicate code in large codebases?",
+    "status": "approved",
+    "createdAt": "2024-01-13T11:20:00.000Z"
+  },
+  {
+    "Id": 5,
+    "postId": "2",
+    "parentId": "4",
+    "author": "QuickBlog Author",
+    "email": "author@quickblog.com",
+    "content": "Great question, Emily! I recommend tools like SonarQube or CodeClimate for automated duplicate code detection. For JavaScript specifically, jscpd is excellent. The key is to run these checks as part of your CI/CD pipeline to catch duplication early.",
+    "status": "approved",
+    "createdAt": "2024-01-13T16:30:00.000Z"
+  },
+  {
+    "Id": 6,
+    "postId": "2",
+    "parentId": null,
+    "author": "David Thompson",
+    "email": "david.thompson@example.com",
+    "content": "I love the emphasis on meaningful variable names. It's amazing how much clearer code becomes with proper naming. One question: how do you balance descriptive names with keeping them concise?",
+    "status": "approved",
+    "createdAt": "2024-01-14T08:45:00.000Z"
+  },
+  {
+    "Id": 7,
+    "postId": "3",
+    "parentId": null,
+    "author": "Lisa Wang",
+    "email": "lisa.wang@example.com",
+    "content": "This CSS Grid tutorial is fantastic! The Holy Grail layout example was exactly what I needed. I've been struggling with complex layouts using Flexbox. CSS Grid seems much more intuitive for 2D layouts.",
+    "status": "approved",
+    "createdAt": "2024-01-19T13:20:00.000Z"
+  },
+  {
+    "Id": 8,
+    "postId": "3",
+    "parentId": null,
+    "author": "Alex Kumar",
+    "email": "alex.kumar@example.com",
+    "content": "Excellent breakdown of Grid vs Flexbox! One thing I'm curious about: when would you still choose Flexbox over Grid? Are there specific use cases where Flexbox is still the better choice?",
+    "status": "pending",
+    "createdAt": "2024-01-20T10:15:00.000Z"
+  },
+  {
+    "Id": 9,
+    "postId": "1",
+    "parentId": null,
+    "author": "John Spam",
+    "email": "spam@badsite.com",
+    "content": "Click here for amazing deals on web hosting! Best prices guaranteed!!! www.sketchy-hosting.com",
+    "status": "spam",
+    "createdAt": "2024-01-18T03:22:00.000Z"
+  },
+  {
+    "Id": 10,
+    "postId": "3",
+    "parentId": "7",
+    "author": "QuickBlog Author",
+    "email": "author@quickblog.com",
+    "content": "I'm so glad the Grid tutorial helped you, Lisa! You're absolutely right that Grid is much more intuitive for 2D layouts. Once you get comfortable with the basics, you'll find yourself reaching for Grid more often than traditional methods.",
+    "status": "approved",
+    "createdAt": "2024-01-19T18:30:00.000Z"
+  },
+  {
+    "Id": 11,
+    "postId": "2",
+    "parentId": null,
+    "author": "Maria Santos",
+    "email": "maria.santos@example.com",
+    "content": "The refactoring strategies section is gold! I've been working on cleaning up some legacy code at work. The 'Extract Method' technique has already made a huge difference in readability. Thank you for the practical examples!",
+    "status": "approved",
+    "createdAt": "2024-01-15T14:55:00.000Z"
+  },
+  {
+    "Id": 12,
+    "postId": "1",
+    "parentId": null,
+    "author": "James Wilson",
+    "email": "james.wilson@example.com",
+    "content": "Really appreciate the section on serverless functions. We're considering adopting serverless architecture for our next project. Any thoughts on cold start issues and how to mitigate them?",
+    "status": "pending",
+    "createdAt": "2024-01-21T09:40:00.000Z"
+  },
+  {
+    "Id": 13,
+    "postId": "3",
+    "parentId": null,
+    "author": "Rachel Green",
+    "email": "rachel.green@example.com",
+    "content": "The Firefox DevTools tip for debugging Grid is so helpful! I had no idea they had such comprehensive Grid inspection tools. This will save me so much time debugging layout issues.",
+    "status": "approved",
+    "createdAt": "2024-01-20T16:25:00.000Z"
+  }
+]

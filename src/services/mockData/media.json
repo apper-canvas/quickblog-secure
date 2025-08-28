@@ -1,0 +1,142 @@
+[
+  {
+    "Id": 1,
+    "url": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1200&q=80",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=300&q=80",
+    "type": "image",
+    "filename": "laptop-coding-setup.jpg",
+    "alt": "Modern laptop setup with code editor",
+    "size": 245760,
+    "dimensions": {
+      "width": 1200,
+      "height": 800
+    },
+    "uploadedAt": "2024-01-10T14:30:00.000Z"
+  },
+  {
+    "Id": 2,
+    "url": "https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=1200&q=80",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1555099962-4199c345e5dd?w=300&q=80",
+    "type": "image",
+    "filename": "clean-code-book.jpg",
+    "alt": "Clean code programming book",
+    "size": 189440,
+    "dimensions": {
+      "width": 1200,
+      "height": 800
+    },
+    "uploadedAt": "2024-01-08T16:45:00.000Z"
+  },
+  {
+    "Id": 3,
+    "url": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=1200&q=80",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=300&q=80",
+    "type": "image",
+    "filename": "css-grid-layout.jpg",
+    "alt": "CSS Grid layout visualization",
+    "size": 167936,
+    "dimensions": {
+      "width": 1200,
+      "height": 800
+    },
+    "uploadedAt": "2024-01-14T11:20:00.000Z"
+  },
+  {
+    "Id": 4,
+    "url": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=1200&q=80",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=300&q=80",
+    "type": "image",
+    "filename": "react-architecture.jpg",
+    "alt": "React application architecture diagram",
+    "size": 234560,
+    "dimensions": {
+      "width": 1200,
+      "height": 800
+    },
+    "uploadedAt": "2024-01-20T16:30:00.000Z"
+  },
+  {
+    "Id": 5,
+    "url": "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=1200&q=80",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1517077304055-6e89abbf09b0?w=300&q=80",
+    "type": "image",
+    "filename": "future-technology.jpg",
+    "alt": "Futuristic technology and development",
+    "size": 298752,
+    "dimensions": {
+      "width": 1200,
+      "height": 800
+    },
+    "uploadedAt": "2024-01-22T13:45:00.000Z"
+  },
+  {
+    "Id": 6,
+    "url": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=1200&q=80",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=300&q=80",
+    "type": "image",
+    "filename": "data-visualization.jpg",
+    "alt": "Data analytics and charts",
+    "size": 276480,
+    "dimensions": {
+      "width": 1200,
+      "height": 800
+    },
+    "uploadedAt": "2024-01-18T12:15:00.000Z"
+  },
+  {
+    "Id": 7,
+    "url": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=1200&q=80",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=300&q=80",
+    "type": "image",
+    "filename": "business-analytics.jpg",
+    "alt": "Business analytics dashboard",
+    "size": 213248,
+    "dimensions": {
+      "width": 1200,
+      "height": 800
+    },
+    "uploadedAt": "2024-01-16T09:30:00.000Z"
+  },
+  {
+    "Id": 8,
+    "url": "https://sample-videos.com/zip/10/mp4/SampleVideo_1280x720_1mb.mp4",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1574717024653-61fd2cf4d44d?w=300&q=80",
+    "type": "video",
+    "filename": "web-development-tutorial.mp4",
+    "alt": "Web development tutorial video",
+    "size": 1048576,
+    "dimensions": {
+      "width": 1280,
+      "height": 720
+    },
+    "uploadedAt": "2024-01-19T14:20:00.000Z"
+  },
+  {
+    "Id": 9,
+    "url": "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=1200&q=80",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1551650975-87deedd944c3?w=300&q=80",
+    "type": "image",
+    "filename": "mobile-app-design.jpg",
+    "alt": "Mobile app design mockups",
+    "size": 195584,
+    "dimensions": {
+      "width": 1200,
+      "height": 800
+    },
+    "uploadedAt": "2024-01-17T11:40:00.000Z"
+  },
+  {
+    "Id": 10,
+    "url": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=1200&q=80",
+    "thumbnailUrl": "https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=300&q=80",
+    "type": "image",
+    "filename": "team-collaboration.jpg",
+    "alt": "Development team collaboration",
+    "size": 287744,
+    "dimensions": {
+      "width": 1200,
+      "height": 800
+    },
+    "uploadedAt": "2024-01-15T16:50:00.000Z"
+  }
+]
