@@ -211,7 +211,7 @@ const Dashboard = () => {
               >
                 <ApperIcon name="Image" size={16} className="mr-2" />
                 Upload Media
-              </Button>
+</Button>
               <Button 
                 variant="secondary" 
                 size="sm" 
@@ -220,6 +220,15 @@ const Dashboard = () => {
               >
                 <ApperIcon name="BarChart3" size={16} className="mr-2" />
                 View Analytics
+              </Button>
+              <Button 
+                variant="secondary" 
+                size="sm" 
+                className="w-full justify-start"
+                onClick={() => navigate("/versions")}
+              >
+                <ApperIcon name="History" size={16} className="mr-2" />
+                View Version History
               </Button>
             </div>
           </Card>
