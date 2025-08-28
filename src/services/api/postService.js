@@ -1,8 +1,20 @@
 import postsData from "@/services/mockData/posts.json";
 
 class PostService {
-  constructor() {
+constructor() {
     this.posts = [...postsData];
+    // Initialize version service if available
+    this.initializeVersionService();
+  }
+
+  async initializeVersionService() {
+    try {
+      const { versionService } = await import('./versionService.js');
+      this.versionService = versionService;
+    } catch (error) {
+      console.log('Version service not available');
+      this.versionService = null;
+    }
   }
 
   async getAll() {
@@ -33,6 +45,12 @@ await this.delay(400);
       captions: postData.captions || {}
     };
     this.posts.unshift(newPost);
+    
+    // Create initial version if version service is available
+    if (this.versionService) {
+      await this.versionService.createVersion(newPost.Id, newPost, 'Initial version');
+    }
+    
     return { ...newPost };
   }
 
@@ -43,18 +61,50 @@ await this.delay(400);
       throw new Error(`Post with id ${id} not found`);
     }
     
+const originalPost = { ...this.posts[index] };
     const updatedPost = {
-...this.posts[index],
+      ...originalPost,
       ...postData,
       updatedAt: new Date().toISOString(),
-      readTime: this.calculateReadTime(postData.content || this.posts[index].content || ""),
-      galleries: postData.galleries || this.posts[index].galleries || [],
-      videoEmbeds: postData.videoEmbeds || this.posts[index].videoEmbeds || [],
-      captions: postData.captions || this.posts[index].captions || {}
+      readTime: this.calculateReadTime(postData.content || originalPost.content || ""),
+      galleries: postData.galleries || originalPost.galleries || [],
+      videoEmbeds: postData.videoEmbeds || originalPost.videoEmbeds || [],
+      captions: postData.captions || originalPost.captions || {}
     };
     
     this.posts[index] = updatedPost;
+    
+    // Create version if content changed and version service is available
+    if (this.versionService && this.hasSignificantChanges(originalPost, updatedPost)) {
+      await this.versionService.createVersion(
+        updatedPost.Id, 
+        updatedPost, 
+        this.generateChangeDescription(originalPost, updatedPost)
+      );
+    }
+    
     return { ...updatedPost };
+  }
+
+  hasSignificantChanges(original, updated) {
+    return (
+      original.title !== updated.title ||
+      original.content !== updated.content ||
+      original.excerpt !== updated.excerpt ||
+      original.status !== updated.status ||
+      JSON.stringify(original.tags) !== JSON.stringify(updated.tags)
+    );
+  }
+
+  generateChangeDescription(original, updated) {
+    const changes = [];
+    if (original.title !== updated.title) changes.push('title');
+    if (original.content !== updated.content) changes.push('content');
+    if (original.excerpt !== updated.excerpt) changes.push('excerpt');
+    if (original.status !== updated.status) changes.push(`status to ${updated.status}`);
+    if (JSON.stringify(original.tags) !== JSON.stringify(updated.tags)) changes.push('tags');
+    
+    return changes.length > 0 ? `Updated ${changes.join(', ')}` : 'Minor changes';
   }
 
   async delete(id) {

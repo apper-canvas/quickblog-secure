@@ -8,13 +8,14 @@ import Editor from "@/components/pages/Editor";
 import Media from "@/components/pages/Media";
 import Analytics from "@/components/pages/Analytics";
 import Settings from "@/components/pages/Settings";
+import VersionHistory from "@/components/organisms/VersionHistory";
 
 function App() {
   return (
 <BrowserRouter>
       <div className="min-h-screen bg-background font-body">
         <ThemeProvider>
-          <Routes>
+<Routes>
             <Route path="/" element={<Layout />}>
               <Route index element={<Navigate to="/dashboard" replace />} />
               <Route path="dashboard" element={<Dashboard />} />
@@ -24,6 +25,8 @@ function App() {
               <Route path="media" element={<Media />} />
               <Route path="analytics" element={<Analytics />} />
               <Route path="settings" element={<Settings />} />
+              <Route path="versions" element={<VersionHistory />} />
+              <Route path="versions/:postId" element={<VersionHistory />} />
             </Route>
           </Routes>
         </ThemeProvider>

@@ -16,6 +16,7 @@ import Media from "@/components/pages/Media";
 import EditorToolbar from "@/components/organisms/EditorToolbar";
 import AIAssistant from "@/components/organisms/AIAssistant";
 import PublishPanel from "@/components/organisms/PublishPanel";
+import VersionHistory from "@/components/organisms/VersionHistory";
 import Error from "@/components/ui/Error";
 import Loading from "@/components/ui/Loading";
 const Editor = () => {
@@ -37,12 +38,13 @@ const [post, setPost] = useState({
   });
 const [loading, setLoading] = useState(false);
   const [saving, setSaving] = useState(false);
-  const [error, setError] = useState("");
+const [error, setError] = useState("");
   const [editorMode, setEditorMode] = useState("visual");
 const [publishPanelOpen, setPublishPanelOpen] = useState(false);
 const [showMediaUploader, setShowMediaUploader] = useState(false);
 const [showMediaSelector, setShowMediaSelector] = useState(false);
 const [showAIAssistant, setShowAIAssistant] = useState(false);
+const [showVersionHistory, setShowVersionHistory] = useState(false);
 // Load post data if editing
   useEffect(() => {
     if (isEditing) {
@@ -205,7 +207,7 @@ const handleMediaUpload = async (files) => {
   
 return (
     <div className="h-[calc(100vh-120px)] flex flex-col">
-      {/* Toolbar */}
+{/* Toolbar */}
       <EditorToolbar
         editorMode={editorMode}
         onModeChange={setEditorMode}
@@ -216,6 +218,8 @@ onFormat={handleFormat}
         onSave={handleSave}
         onToggleAI={() => setShowAIAssistant(!showAIAssistant)}
         showAI={showAIAssistant}
+        onToggleVersions={() => setShowVersionHistory(!showVersionHistory)}
+        showVersions={showVersionHistory}
         isSaving={saving}
       />
       
@@ -351,6 +355,49 @@ onFormat={handleFormat}
                   handleInputChange("tags", uniqueTags);
                   toast.success(`${newTags.length} keyword(s) added`);
                 }}
+              />
+            </div>
+)}
+
+          {/* Version History Panel */}
+          {showVersionHistory && isEditing && (
+            <div className="mb-6 pb-6 border-b border-gray-200">
+              <div className="flex items-center justify-between mb-4">
+                <div className="flex items-center space-x-2">
+                  <ApperIcon name="History" size={18} />
+                  <h3 className="font-medium text-charcoal">Version History</h3>
+                </div>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => setShowVersionHistory(false)}
+                >
+                  <ApperIcon name="X" size={16} />
+                </Button>
+              </div>
+              <VersionHistory
+                postId={parseInt(id)}
+                onRestoreVersion={async (restoredData) => {
+                  setPost(prevPost => ({
+                    ...prevPost,
+                    title: restoredData.title,
+                    content: restoredData.content,
+                    excerpt: restoredData.excerpt,
+                    status: restoredData.status,
+                    tags: restoredData.tags,
+                    updatedAt: new Date().toISOString()
+                  }));
+                  
+                  // Also update the post in the service
+                  await postService.update(parseInt(id), {
+                    title: restoredData.title,
+                    content: restoredData.content,
+                    excerpt: restoredData.excerpt,
+                    status: restoredData.status,
+                    tags: restoredData.tags
+                  });
+                }}
+                compact={true}
               />
             </div>
           )}

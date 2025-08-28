@@ -22,10 +22,15 @@ const Sidebar = ({ isOpen, onClose, className }) => {
       label: "New Post", 
       icon: "PenTool" 
     },
-    { 
+{ 
       path: "/media", 
       label: "Media", 
       icon: "Image" 
+    },
+    { 
+      path: "/versions", 
+      label: "Version History", 
+      icon: "History" 
     },
     { 
       path: "/analytics", 
