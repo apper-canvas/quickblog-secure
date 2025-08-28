@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { toast } from "react-toastify";
-import ThemePreview from "@/components/organisms/ThemePreview";
 import ApperIcon from "@/components/ApperIcon";
 import FormField from "@/components/molecules/FormField";
 import Card from "@/components/atoms/Card";
@@ -8,6 +7,7 @@ import Textarea from "@/components/atoms/Textarea";
 import Button from "@/components/atoms/Button";
 import Input from "@/components/atoms/Input";
 import Media from "@/components/pages/Media";
+import ThemePreview from "@/components/organisms/ThemePreview";
 import Loading from "@/components/ui/Loading";
 
 const Settings = () => {
@@ -56,11 +56,11 @@ const Settings = () => {
       await new Promise(resolve => setTimeout(resolve, 1000));
       toast.success("Settings saved successfully!");
     } catch (error) {
+} catch (error) {
       toast.error("Failed to save settings");
     } finally {
-setLoading(false);
+      setLoading(false);
     }
-  };
 
   return (
     <div className="space-y-8">
@@ -188,11 +188,10 @@ setLoading(false);
                   <>
                     <ApperIcon name="Save" size={16} className="mr-2" />
                     Save Settings
-                  </>
+</>
                 )}
-</Button>
+              </Button>
             </Card>
-
             {/* Quick Stats */}
             <Card className="p-6">
               <h3 className="font-semibold text-charcoal mb-4">Quick Stats</h3>
@@ -213,7 +212,7 @@ setLoading(false);
             </Card>
           </div>
         </div>
-      )}
+)}
 
       {activeTab === "themes" && <ThemePreview />}
 
@@ -280,10 +279,9 @@ setLoading(false);
                 )}
               </Button>
             </div>
-</Card>
-          </div>
-        )}
-      </div>
+          </Card>
+        </div>
+      )}
     </div>
   );
 };
