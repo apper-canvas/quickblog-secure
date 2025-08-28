@@ -49,18 +49,19 @@ const Settings = () => {
     }));
   };
 
-  const handleSave = async () => {
+const handleSave = async () => {
     setLoading(true);
     try {
       // Simulate API call
       await new Promise(resolve => setTimeout(resolve, 1000));
       toast.success("Settings saved successfully!");
     } catch (error) {
-} catch (error) {
       toast.error("Failed to save settings");
+      console.error("Settings save error:", error);
     } finally {
       setLoading(false);
     }
+  };
 
   return (
     <div className="space-y-8">
